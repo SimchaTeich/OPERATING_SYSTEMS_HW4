@@ -105,9 +105,11 @@ void addFD(void *this, int fd, handler_t handler)
 
 void waitFor(void *this)
 {
-    if(this->is_on)
+    Reactor *reactor = (Reactor *)this;
+    
+    if(reactor->is_on)
     {
-        pthread_join(this->ptid);
-        this->is_on = false;
+        pthread_join(reactor->ptid);
+        reactor->is_on = false;
     }
 }
