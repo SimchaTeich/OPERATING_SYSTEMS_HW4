@@ -118,8 +118,9 @@ void addFD(void *this, int fd, handler_t handler)
     new_FD_action->next = reactor->head;
     reactor->head = new_FD_action;
 
-    // TODO: reactor->head->pfd = create new pollfd
-    // TODO: insert reactor->head->pfd into array reactor->pfds
+
+    // TODO: create and insert new pollfd intp array: reactor->pfds
+    // TODO: take a poiner to the new pollfd and assignment into reactor->head->pfd
 
     reactor->size++;
 }
