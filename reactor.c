@@ -67,12 +67,14 @@ void *createReactor()
 }
 
 
-void stopReactor(Reactor *this)
+void stopReactor(void *this)
 {
-    if(this->is_on)
+    Reactor *reactor = (Reactor *)this;
+    
+    if(reactor->is_on)
     {
-        pthread_cancel(this->ptid);
-        this->is_on = false;
+        pthread_cancel(reactor->ptid);
+        reactor->is_on = false;
     }
 }
 
