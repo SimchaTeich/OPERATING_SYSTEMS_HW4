@@ -59,7 +59,9 @@ void *createReactor()
 {
     Reactor *reactor = (Reactor*)malloc(sizeof(Reactor));
     reactor->head = NULL;
+    reactor->pfds = NULL;
     reactor->size = 0;
+    reactor->is_on = false;
 
     return reaction;
 }
