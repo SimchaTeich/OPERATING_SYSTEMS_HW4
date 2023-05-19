@@ -85,6 +85,12 @@ void startReactor(Reactor *this)
 }
 
 
+void removeFD(void *this, int fd)
+{
+    // TODO
+}
+
+
 void addFD(void *this, int fd, handler_t handler)
 {
     // TODO
