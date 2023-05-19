@@ -79,12 +79,14 @@ void stopReactor(void *this)
 }
 
 
-void startReactor(Reactor *this)
+void startReactor(void *this)
 {
-    if(!this->is_on)
+    Reactor *reactor = (Reactor *)this;
+
+    if(!reactor->is_on)
     {
-        pthread_create(&(this->ptid), NULL, &react, this);
-        this->is_on = true;
+        pthread_create(&(reactor->ptid), NULL, &react, reactor);
+        reactor->is_on = true;
     }
 }
 
