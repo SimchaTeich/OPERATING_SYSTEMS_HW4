@@ -12,7 +12,7 @@ typedef struct FD_action
 {
     int fd;
     handler_t handler;
-    struct pollfd pfd[1];   // just ONE pointer to pollfd.
+    struct pollfd *pfd;   // just ONE pointer to pollfd.
     struct FD_action *next;
 
 } FD_action;
@@ -60,6 +60,7 @@ FD_action* create_FD_action(int fd, handler_t handler)
     FD_action *new_FD_action = (FD_action*)malloc(sizeof(FD_action));
     new_FD_action->fd = fd;
     new_FD_action->handler = handler;
+    new_FD_action->pfd = NULL; // update outside!
     new_FD_action->next = NULL;
 
     return new_FD_action;
@@ -112,8 +113,8 @@ void addFD(void *this, int fd, handler_t handler)
 {
     Reactor *reactor = (Reactor *)this;
 
+    // insert new node to the head of the list.
     FD_action *new_FD_action = create_FD_action(fd, handler);
-
     if(reactor->size == 0)
     {
         reactor->head = new_FD_action;
@@ -123,6 +124,9 @@ void addFD(void *this, int fd, handler_t handler)
         new_FD_action->next = reactor->head;
         reactor->head = new_FD_action;
     }
+
+    // TODO: reactor->head->pfd = create new pollfd
+    // TODO: insert reactor->head->pfd into array reactor->pfds
 }
 
 
