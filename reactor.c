@@ -114,7 +114,15 @@ void addFD(void *this, int fd, handler_t handler)
 
     FD_action *new_FD_action = create_FD_action(fd, handler);
 
-
+    if(reactor->size == 0)
+    {
+        reactor->head = new_FD_action;
+    }
+    else
+    {
+        new_FD_action->next = reactor->head;
+        reactor->head = new_FD_action;
+    }
 }
 
 
