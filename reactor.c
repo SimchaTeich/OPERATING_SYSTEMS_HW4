@@ -55,6 +55,17 @@ void* react(void *args)
 }
 
 
+FD_action* create_FD_action(int fd, handler_t handler)
+{
+    FD_action *new_FD_action = (FD_action*)malloc(sizeof(FD_action));
+    new_FD_action->fd = fd;
+    new_FD_action->handler = handler;
+    new_FD_action->next = NULL;
+
+    return new_FD_action;
+}
+
+
 void *createReactor()
 {
     Reactor *reactor = (Reactor*)malloc(sizeof(Reactor));
@@ -99,7 +110,11 @@ void removeFD(void *this, int fd)
 
 void addFD(void *this, int fd, handler_t handler)
 {
-    // TODO
+    Reactor *reactor = (Reactor *)this;
+
+    FD_action *new_FD_action = create_FD_action(fd, handler);
+
+
 }
 
 
