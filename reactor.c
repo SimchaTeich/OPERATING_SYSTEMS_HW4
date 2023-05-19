@@ -115,18 +115,13 @@ void addFD(void *this, int fd, handler_t handler)
 
     // insert new node to the head of the list.
     FD_action *new_FD_action = create_FD_action(fd, handler);
-    if(reactor->size == 0)
-    {
-        reactor->head = new_FD_action;
-    }
-    else
-    {
-        new_FD_action->next = reactor->head;
-        reactor->head = new_FD_action;
-    }
+    new_FD_action->next = reactor->head;
+    reactor->head = new_FD_action;
 
     // TODO: reactor->head->pfd = create new pollfd
     // TODO: insert reactor->head->pfd into array reactor->pfds
+
+    reactor->size++;
 }
 
 
