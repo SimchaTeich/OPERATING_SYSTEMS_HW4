@@ -132,6 +132,7 @@ void removeFD(void *this, int fd)
     }
 }
 
+// TODO: DONE. -> i think
 void addFD(void *this, int fd, handler_t handler)
 {
     Reactor *reactor = (Reactor *)this;
@@ -142,8 +143,22 @@ void addFD(void *this, int fd, handler_t handler)
     reactor->head = new_FD_action;
 
     // TODO: create and insert new pollfd inpt array: reactor->pfds
+    struct pollfd *new_fdps = (struct pollfd *)realloc(reactor->pfds, sizeof(struct pollfd) * reactor->size);
     // TODO: take a poiner to the new pollfd and assignment into reactor->head->pfd
-    // i will think about logic tomorrow now is so late ....
+    // failure initilaztion case
+    if (new_fdps == NULL)
+    {
+        free(new_fdps);
+        return;
+    }
+    // reactor->pfds
+    reactor->pfds = new_fdps;
+    // assignment into reactor->head->pfd
+    reactor->head->pfd = &reactor->pfds[reactor->size - 1];
+    // init the new pollfd by default values well
+    reactor->pfds[reactor->size - 1].fd = fd;
+    reactor->pfds[reactor->size - 1].events = POLLIN;
+
     reactor->size++;
 }
 
