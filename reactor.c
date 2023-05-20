@@ -122,15 +122,16 @@ void removeFD(void *this, int fd)
             // delete
             free(current);
             // i think that after free we done with that and nothing to do ?
-            //-wrote just for verification and simulate to track write logic :)
+            //-wrote just for verification and simulate to track and write logic :)
             return;
         }
+        // here the situation isnot found, just keep check the next nodes
         prevois = current;
         // get next
         current = current->next;
     }
 }
-// TODO
+
 void addFD(void *this, int fd, handler_t handler)
 {
     Reactor *reactor = (Reactor *)this;
@@ -142,7 +143,7 @@ void addFD(void *this, int fd, handler_t handler)
 
     // TODO: create and insert new pollfd inpt array: reactor->pfds
     // TODO: take a poiner to the new pollfd and assignment into reactor->head->pfd
-
+    // i will think about logic tomorrow now is so late ....
     reactor->size++;
 }
 
