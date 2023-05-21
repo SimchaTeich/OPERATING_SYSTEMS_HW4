@@ -8,4 +8,4 @@ server: react_server.c
 	gcc -Wall -o react_server react_server.c -L. -l st_reactor
 
 clean:
-	rm react_server
+	rm react_server st_reactor.o libst_reactor.so 
