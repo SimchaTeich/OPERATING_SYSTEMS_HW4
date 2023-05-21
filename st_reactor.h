@@ -12,7 +12,7 @@ typedef struct FD_action
 {
     int fd;
     handler_t handler;
-    struct pollfd *pfd;   // just ONE pointer to pollfd.
+    int pfd_index;          // index to fd inside Reactor->pfds..
     struct FD_action *next;
 
 } FD_action;

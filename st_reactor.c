@@ -1,9 +1,21 @@
 #include "st_reactor.h"
 
 
+
+void printLinkedList(FD_action *head)
+{
+    while(head != NULL)
+    {
+        printf("[fd %d, indx: %d]-->", head->fd, head->pfd_index);
+        head = head->next;
+    }
+    printf("NULL\n");
+}
+
+
+
 void* react(void *args)
 {
-    printf("inside react()\n");
     Reactor *reactor = (Reactor *)args;
     FD_action *p;
 
@@ -17,7 +29,7 @@ void* react(void *args)
         
         for(p = reactor->head; p != NULL; p = p->next)
         {
-            if(p->pfd->revents != POLLIN) continue;
+            if(reactor->pfds[p->pfd_index].revents != POLLIN) continue;
             p->handler(reactor, p->fd);
         }
     }
@@ -31,7 +43,7 @@ FD_action* create_FD_action(int fd, handler_t handler)
     FD_action *new_FD_action = (FD_action*)malloc(sizeof(FD_action));
     new_FD_action->fd = fd;
     new_FD_action->handler = handler;
-    new_FD_action->pfd = NULL; // update outside!
+    new_FD_action->pfd_index = -1; // update later!
     new_FD_action->next = NULL;
 
     return new_FD_action;
@@ -87,10 +99,18 @@ void def_from_pfds(FD_action *fd_actions, struct pollfd pfds[], int fd, int *fd_
     // Copy the one from the end over this one
     pfds[i] = pfds[*fd_count-1];
 
-    // updates first FD_action about new place of pfd (becaue last place was befor...)
-    fd_actions->pfd =  &pfds[i];
+    // updates correct FD_action about new place of pfd (becaue last place was befor...)
+    FD_action *curr = fd_actions;
+    while(curr != NULL)
+    {
+        if(curr->pfd_index == (*fd_count-1))
+        {
+            curr->pfd_index = i;
+            break;
+        }
+        curr = curr->next;
+    }
     
-
     (*fd_count)--;
 }
 
@@ -107,7 +127,7 @@ void removeFD(void *this, int fd)
 
     if(curr->fd == fd)
     {
-        reactor->head =  curr->next;
+        reactor->head = curr->next;
         free(curr);
     }
     else
@@ -124,6 +144,8 @@ void removeFD(void *this, int fd)
             free(remove);
         }
     }
+
+    printLinkedList(reactor->head);
 }
 
 
@@ -135,16 +157,6 @@ void add_to_pfds(struct pollfd *pfds[], int newfd, int *fd_count, int *fd_size, 
         *fd_size *= 2; // Double it
 
         *pfds = realloc(*pfds, sizeof(**pfds) * (*fd_size));
-
-        // updates pfd-s of all FD_actions
-        FD_action *curr = r->head;
-        int i = 0;
-        while(curr != NULL)
-        {
-            curr->pfd = &((*pfds)[r->count - i]);
-            curr = curr->next;
-            i++;
-        }
     }
 
     (*pfds)[*fd_count].fd = newfd;
@@ -167,8 +179,10 @@ void addFD(void *this, int fd, handler_t handler)
     // create and insert new pollfd into array: reactor->pfds
     add_to_pfds(&(reactor->pfds), fd, &(reactor->count), &(reactor->size), reactor);
 
-    // take the poiner to the new pollfd and assignment into reactor->head->pfd
-    reactor->head->pfd = &(reactor->pfds[reactor->count - 1]);
+    // update index of new pollfd into FD_action node.
+    reactor->head->pfd_index = reactor->count - 1;
+
+    printLinkedList(reactor->head);
 }
 
 
