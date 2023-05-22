@@ -1,11 +1,11 @@
-all: react server
+all: st_react react_server
 
-react: st_reactor.c
+st_react: st_reactor.c
 	gcc -c -Wall -Werror -fpic st_reactor.c
-	gcc -shared -o libst_reactor.so st_reactor.o
+	gcc -shared -o st_reactor.so st_reactor.o
 
-server: react_server.c
-	gcc -Wall -o react_server react_server.c -L. -l st_reactor
+react_server: react_server.o st_reactor.so
+	gcc -Wall -o $@ $< ./st_reactor.so -pthread
 
 clean:
-	rm react_server st_reactor.o libst_reactor.so
+	rm react_server.o st_reactor.o st_reactor.so react_server
