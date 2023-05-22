@@ -1,7 +1,6 @@
 #include "st_reactor.h"
 
 
-
 void printLinkedList(FD_action *head)
 {
     while(head != NULL)
@@ -11,7 +10,6 @@ void printLinkedList(FD_action *head)
     }
     printf("NULL\n");
 }
-
 
 
 void* react(void *args)
@@ -145,7 +143,7 @@ void removeFD(void *this, int fd)
         }
     }
 
-    printLinkedList(reactor->head);
+    //printLinkedList(reactor->head);
 }
 
 
@@ -182,7 +180,7 @@ void addFD(void *this, int fd, handler_t handler)
     // update index of new pollfd into FD_action node.
     reactor->head->pfd_index = reactor->count - 1;
 
-    printLinkedList(reactor->head);
+    //printLinkedList(reactor->head);
 }
 
 
